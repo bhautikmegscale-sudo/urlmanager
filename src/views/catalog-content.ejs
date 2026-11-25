@@ -1,0 +1,122 @@
+<header class="page-header">
+  <div>
+    <p class="catalog-id">Meta catalog · <%= catalogId || 'Setup required' %></p>
+    <h1>Product links</h1>
+  </div>
+  <button type="button" id="refresh">Refresh from Meta</button>
+</header>
+<% if (error) { %><p class="error" role="alert"><%= error %></p><% } %>
+<section class="rule-panel" aria-labelledby="rule-title">
+<h2 id="rule-title">Replace links in bulk</h2>
+<p>Choose the address to replace and enter the new address. Preview the changes, then select the products you want to update.</p>
+<form method="get" action="/" class="url-rule" aria-label="URL replacement rule">
+  <input type="hidden" name="q" value="<%= q %>">
+  <input type="hidden" name="pageSize" value="<%= pageSize %>">
+  <div>
+    <label for="from">Current address</label>
+    <input type="url" id="from" name="from" value="<%= from %>" list="catalog-origins" maxlength="2048" required>
+    <datalist id="catalog-origins">
+      <% for (const origin of origins) { %><option value="<%= origin %>"></option><% } %>
+    </datalist>
+  </div>
+  <div>
+    <label for="to">New address</label>
+    <input type="url" id="to" name="to" value="<%= to %>" maxlength="2048" required>
+  </div>
+  <button type="submit">Preview changes</button>
+</form>
+<% if (!from && origins.length > 1) { %><p>Choose a current address from the suggestions.</p><% } %>
+</section>
+<section class="product-panel" aria-labelledby="products-title">
+<div class="product-header">
+  <h2 id="products-title">Products</h2>
+  <% if (!error) { %><p><%= q ? matching + ' of ' : '' %><%= total %> products</p><% } %>
+</div>
+<div class="toolbar">
+  <form method="get" action="/" role="search">
+    <% if (customFrom) { %><input type="hidden" name="from" value="<%= from %>"><% } %>
+    <input type="hidden" name="to" value="<%= to %>">
+    <label for="q">Search products</label>
+    <div class="search">
+      <input type="search" id="q" name="q" value="<%= q %>" maxlength="200" placeholder="Name, product ID, or retailer ID">
+      <input type="hidden" name="pageSize" value="<%= pageSize %>">
+      <button>Search</button>
+    </div>
+  </form>
+  <div class="controls">
+    <button type="button" id="transform">Review proposed links</button>
+    <button type="button" id="select-all-pages" <%= !from || !matching ? 'disabled' : '' %>>Select all pages</button>
+    <button type="button" id="clear-selection" hidden>Clear selection</button>
+    <button type="button" id="bulk" class="primary" disabled>Update selected</button>
+  </div>
+</div>
+<p id="status" role="status" aria-live="polite" hidden></p>
+<p id="selection-status" role="status" hidden></p>
+<section id="bulk-progress" class="bulk-progress" aria-labelledby="bulk-progress-title" hidden>
+  <h2 id="bulk-progress-title">Bulk update progress</h2>
+  <p id="bulk-counts" role="status"></p>
+  <progress id="bulk-meter" aria-label="Products processed" value="0"></progress>
+  <ul id="results" aria-label="Product update results" tabindex="0"></ul>
+</section>
+<div class="table-wrap" tabindex="0" aria-label="Catalog products">
+<table>
+  <thead><tr>
+    <th scope="col"><input type="checkbox" id="all" aria-label="Select eligible products on this page. Double-click to select all pages." title="Double-click to select all pages"></th>
+    <th scope="col">Product</th><th scope="col">Price &amp; stock</th><th scope="col">Meta review</th><th scope="col">Product links</th><th scope="col">Actions</th>
+  </tr></thead>
+  <tbody>
+  <% for (const product of products) { %>
+    <tr data-id="<%= product.id %>" data-original="<%= product.url || '' %>" data-new="<%= product.newUrl || '' %>">
+      <td><input type="checkbox" class="select" aria-label="Select product <%= product.id %>" <%= product.newUrl ? '' : 'disabled' %>></td>
+      <th scope="row">
+        <div class="product">
+          <% if (product.image_url) { %><img loading="lazy" alt="" src="<%= product.image_url %>"><% } %>
+          <div>
+            <span class="product-name"><%= product.name || 'Unnamed product' %></span>
+            <small>Meta ID <%= product.id %></small>
+            <% if (product.retailer_id) { %><small>Retailer ID <%= product.retailer_id %></small><% } %>
+          </div>
+        </div>
+      </th>
+      <td>
+        <%= product.priceLabel ?? product.price ?? '—' %><%= product.currency && !product.priceLabel?.includes(product.currency) ? ' ' + product.currency : '' %>
+        <small><%= product.availability || 'Stock not reported' %></small>
+      </td>
+      <td class="meta-review"><%- include('meta-review', { review: product.review }) %></td>
+      <td class="links">
+        <small>Current link</small>
+        <div class="url"><% if (product.url) { %><a href="<%= product.url %>" target="_blank" rel="noopener noreferrer"><%= product.url %></a><% } else { %>No usable link<% } %></div>
+        <small>Proposed link</small>
+        <div class="url"><% if (product.newUrl) { %><a href="<%= product.newUrl %>" target="_blank" rel="noopener noreferrer"><%= product.newUrl %></a><% } else { %>No change proposed<% } %></div>
+      </td>
+      <td class="actions">
+        <button type="button" class="preview" aria-label="Edit link for product <%= product.id %>">Edit link</button>
+      </td>
+    </tr>
+  <% } %>
+  <% if (!products.length) { %><tr><td colspan="6"><%= error ? 'Catalog unavailable' : 'No products found' %></td></tr><% } %>
+  </tbody>
+</table>
+</div>
+<% const pageLink = number => '/?' + new URLSearchParams({ page: String(number), pageSize: String(pageSize), q, to, ...(customFrom ? { from } : {}) }); %>
+<nav aria-label="Catalog pages">
+  <% if (page > 1) { %><a href="<%= pageLink(page - 1) %>">← Previous</a><% } else { %><span>← Previous</span><% } %>
+  <strong>Page <%= page %> of <%= totalPages %></strong>
+  <% if (page < totalPages) { %><a href="<%= pageLink(page + 1) %>">Next →</a><% } else { %><span>Next →</span><% } %>
+</nav>
+</section>
+<dialog id="preview" aria-labelledby="preview-title">
+  <h2 id="preview-title">Review link changes</h2>
+  <p id="preview-summary"></p>
+  <div id="preview-urls"></div>
+  <form method="dialog">
+    <div id="single-url-editor" hidden>
+      <label for="single-url">New product link</label>
+      <input type="url" id="single-url" placeholder="https://example.com/product" pattern="[Hh][Tt][Tt][Pp][Ss]?://.+" title="Enter a URL beginning with http:// or https://" maxlength="4096" required disabled>
+    </div>
+    <div class="controls">
+      <button value="cancel" formnovalidate autofocus>Cancel</button>
+      <button value="confirm" class="primary">Save to Meta</button>
+    </div>
+  </form>
+</dialog>

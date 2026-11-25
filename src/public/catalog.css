@@ -1,0 +1,72 @@
+:root {
+  color-scheme: light;
+  font: 14px/1.5 system-ui, sans-serif;
+  --sage: #a8bc9b;
+  --sage-light: #e5ede0;
+  --sage-dark: #455b41;
+  color: #202922;
+  background: #f5f7f2;
+}
+* { box-sizing: border-box; }
+main { max-width: 1500px; padding: clamp(.9rem, 3vw, 3rem); margin: auto; }
+h1 { margin: 0; font-size: clamp(2rem, 4vw, 2.75rem); letter-spacing: -.04em; line-height: 1.15; }
+h2 { margin: 0; font-size: 1.2rem; }
+.page-header { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: end; gap: 1rem; margin-bottom: 1.6rem; }
+.catalog-id { margin: 0 0 .4rem; color: #536057; }
+.rule-panel, .product-panel { padding: clamp(.8rem, 2vw, 1.35rem); border: 1px solid #d9dfd8; border-radius: .65rem; background: #fff; }
+.rule-panel { margin-bottom: 1.4rem; }
+.rule-panel p { margin: .3rem 0 1rem; color: #4e5b51; }
+.rule-panel p:last-child { margin-bottom: 0; }
+.product-header { display: flex; flex-wrap: wrap; align-items: baseline; gap: .7rem; margin-bottom: .8rem; }
+.product-header p { margin: 0; color: #536057; }
+.toolbar, .controls, .search, nav { display: flex; flex-wrap: wrap; align-items: center; gap: .65rem; }
+.toolbar { justify-content: space-between; align-items: end; margin-bottom: 1rem; }
+label { display: block; font-weight: 650; margin-bottom: .25rem; }
+input[type=search], input[type=url], button { min-height: 2.65rem; padding: .5rem .75rem; border: 1px solid #aebbb0; border-radius: .4rem; background: white; color: inherit; font: inherit; }
+.url-rule { display: flex; flex-wrap: wrap; align-items: end; gap: .65rem; }
+.url-rule > div { flex: 1 1 16rem; }
+.url-rule input[type=url] { width: 100%; }
+input[type=search] { width: min(16rem, 65vw); }
+button { font-weight: 600; cursor: pointer; }
+button:hover:not(:disabled) { box-shadow: 0 0 0 2px var(--sage-light); }
+:focus-visible { outline: 2px solid var(--sage-dark); outline-offset: 3px; }
+input[type=checkbox], progress { accent-color: var(--sage-dark); }
+input[type=checkbox] { width: 1.1rem; height: 1.1rem; }
+button:disabled { opacity: .5; cursor: default; }
+.primary { background: var(--sage); border-color: var(--sage-dark); color: #202922; }
+.table-wrap { overflow: auto; border: 1px solid #d9dfd8; border-radius: .5rem; background: white; }
+table { width: 100%; min-width: 820px; border-collapse: collapse; text-align: left; }
+td, th { padding: .8rem; vertical-align: top; border-bottom: 1px solid #e6eae5; }
+thead { background: var(--sage-light); }
+thead th { font-size: .88rem; color: #3d4b41; }
+tbody tr:focus-within, tbody tr:hover { background: #fafbf9; }
+thead th, .actions { white-space: nowrap; }
+tbody tr:last-child > * { border-bottom: 0; }
+.product { display: flex; align-items: flex-start; gap: .75rem; min-width: 12rem; }
+.product-name { font-weight: 650; }
+small { display: block; color: #536057; font-weight: 400; font-variant-numeric: tabular-nums; }
+.links { width: 35%; }
+.url { min-width: 11rem; overflow-wrap: anywhere; }
+.url + small { margin-top: .6rem; }
+.meta-review { min-width: 10rem; overflow-wrap: anywhere; }
+.review-list { margin: .25rem 0; padding-left: 1rem; }
+.meta-review summary { color: #86232b; cursor: pointer; }
+img { flex: 0 0 48px; width: 48px; height: 48px; object-fit: contain; background: #f5f6f3; border-radius: .35rem; }
+a { color: var(--sage-dark); text-underline-offset: .16em; }
+nav { justify-content: center; margin: 1rem 0 0; gap: 1rem; }
+nav span { color: #55657b; }
+#status, #selection-status, .error { padding: .75rem; border-radius: .4rem; background: var(--sage-light); }
+.bulk-progress { padding: 1rem; margin: 1rem 0; border: 1px solid #d5deeb; border-radius: .8rem; background: white; }
+.bulk-progress h2 { margin: 0; font-size: 1.1rem; }
+.bulk-progress p { margin: .4rem 0; }
+.bulk-progress progress { width: 100%; }
+#results { max-height: 11rem; overflow: auto; margin: .5rem 0 0; padding-left: 1.35rem; }
+#results .failed { color: #86232b; }
+.error, #status.error { background: #fee7e7; color: #86232b; }
+dialog { width: min(42rem, 95vw); max-height: 85vh; padding: 1.5rem; border: 1px solid #aebbb0; border-radius: .65rem; color: inherit; }
+dialog::backdrop { background: #20292299; }
+dialog h2 { margin-top: 0; }
+#single-url-editor { margin-bottom: 1rem; }
+#single-url { width: 100%; }
+#preview-urls { overflow: auto; max-height: 45vh; margin-bottom: 1rem; }
+#preview-urls p { white-space: pre-line; overflow-wrap: anywhere; border-bottom: 1px solid #dae2ed; padding-bottom: .75rem; }

@@ -1,0 +1,31 @@
+<% const labels = new Map([
+  ['approved', 'Approved'], ['pending', 'In review'], ['rejected', 'Rejected'],
+  ['outdated', 'Outdated'], ['no_review', 'No review'],
+]); %>
+<% if (review.status) { %>
+  <strong><%= labels.get(review.status) || review.status %></strong>
+<% } else if (!review.capabilities.length) { %>
+  <span>No status reported</span>
+<% } %>
+<% if (review.capabilities.length) { %>
+  <ul class="review-list">
+    <% for (const capability of review.capabilities) { %>
+      <li><%= capability.key === 'DA' ? 'Catalog ads' : capability.key === 'MINI_SHOPS' ? 'Shops' : capability.key %>:
+        <strong><%= labels.get(capability.value.toLowerCase()) || capability.value %></strong></li>
+    <% } %>
+  </ul>
+<% } %>
+<% const issueCount = review.issues.length + review.rejectionReasons.length; %>
+<% if (issueCount) { %>
+  <details>
+    <summary><%= issueCount === 1 ? '1 issue' : issueCount + ' issues' %></summary>
+    <ul class="review-list">
+      <% for (const reason of review.rejectionReasons) { %><li><%= reason.replaceAll('_', ' ') %></li><% } %>
+      <% for (const issue of review.issues) { %>
+        <li><strong><%= issue.title || issue.error_type || 'Catalog issue' %></strong>
+          <% if (issue.description) { %><br><%= issue.description %><% } %>
+        </li>
+      <% } %>
+    </ul>
+  </details>
+<% } %>
