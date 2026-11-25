@@ -14,6 +14,8 @@ const config = z.object({
   META_CATALOG_ID: z.string().trim().regex(/^\d*$/).default(''),
   META_API_VERSION: z.string().regex(/^v\d+\.\d+$/).default('v26.0'),
   BASE_URL: absoluteUrl.default(new URL('http://localhost:3000')),
+  APP_USERNAME: z.string().trim().max(128).regex(/^[^:\x00-\x1f\x7f]*$/).default(''),
+  APP_PASSWORD: z.string().max(512).regex(/^[^\x00-\x1f\x7f]*$/).default(''),
   URL_REPLACEMENT_FROM: absoluteUrl,
   URL_REPLACEMENT_TO: absoluteUrl,
 }).safeParse(process.env);

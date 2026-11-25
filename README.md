@@ -8,7 +8,8 @@ A local Express and EJS dashboard for reviewing and updating product links in on
 2. Open `.env`. If it is missing, copy `.env.example` to `.env` (`Copy-Item .env.example .env` in PowerShell).
 3. Enter the numeric catalog ID from Commerce Manager and a Meta access token with `catalog_management`. Use a user or system user assigned manage access to the catalog. Ensure the Meta app has the appropriate Marketing API access level and complete App Review if required for your integration.
 4. Set `URL_REPLACEMENT_FROM` and `URL_REPLACEMENT_TO`. The sample uses Graph API `v26.0`. Set `META_API_VERSION` to a supported version for your app.
-5. Run `npm run dev` and open [the dashboard](http://localhost:3000).
+5. Set `APP_USERNAME` and `APP_PASSWORD` in `.env`. Use a unique password and quote it if it contains characters such as `#`. The username cannot contain a colon.
+6. Run `npm run dev`, open [the dashboard](http://localhost:3000), and sign in at the browser prompt.
 
 In development, the server restarts automatically when backend code or `.env` changes. Refresh the browser to load edited templates, CSS, and browser JavaScript. Use **Refresh from Meta** to reload product data from the catalog.
 
@@ -25,6 +26,8 @@ URL rules match the source origin and optional path prefix at a path boundary. F
 Use **Review proposed links** to see the changes on the current page. To change one product, choose **Edit link** on its row. To change multiple products, select their rows and click **Update selected**. In either case, **Save to Meta** confirms the update. A later import from an upstream catalog feed may replace a manually updated link.
 
 ## REST API
+
+The dashboard and API use HTTP Basic authentication. For a local API request, run `curl.exe -u your-username http://localhost:3000/api/catalog/products` and enter your password when prompted. Keep the default loopback binding for local use. Any remote access must use HTTPS.
 
 | Method | Path | Use |
 | --- | --- | --- |

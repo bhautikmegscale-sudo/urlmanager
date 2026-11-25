@@ -3,6 +3,7 @@ import path from 'node:path';
 import { ZodError } from 'zod';
 import { env } from './config/env';
 import { errorMessage } from './controllers/catalog.controller';
+import { requireAuthentication } from './middleware/auth';
 import { catalogRoutes } from './routes/catalog.routes';
 import { webRoutes } from './routes/web.routes';
 import { CatalogError, log } from './types/catalog.types';
@@ -32,6 +33,7 @@ app.use((req, res, next) => {
   }
   next();
 });
+app.use(requireAuthentication);
 app.use('/assets', express.static(path.join(source, 'public'), {
   cacheControl: false,
   etag: false,
